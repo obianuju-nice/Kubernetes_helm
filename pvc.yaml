@@ -1,0 +1,129 @@
+
+# Source: prometheus/templates/pvc.yaml
+
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+
+metadata:
+
+  name: nickos-pvc
+
+  namespace: team1
+
+spec:
+
+  accessModes:
+
+    - ReadWriteOnce
+
+  resources:
+
+    requests:
+
+      storage: "2Gi"     # requesting 22Gi of the storage to be mounted in the pod when created
+
+
+
+
+
+
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: nickos-app
+
+  namespace: team1
+
+spec:
+
+  replicas: 1
+
+  spec:
+
+  selector:
+
+    matchLabels:
+
+      app: nickos-app
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: nickos-app
+
+    spec:
+
+      containers:
+
+      - name: website
+
+        image: obianuju/nickos-website:v1
+
+        ports:
+
+        - containerPort: 80
+
+        volumeMounts:
+
+        - mountPath: /usr/bin/nickos
+
+          name: nickos-pvc-volume
+
+      volumes:
+
+        name: nickos-pvc-volume
+
+        persistentVolumeClaim:
+
+         claimName: nickos-pvc  
+
+  
+
+       
+
+---
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: mysql-service
+
+  namespace: team1
+
+spec:
+
+  type: ClusterIP
+
+  selector:
+
+    app: nickos-app
+
+  ports:
+
+    - name: http
+
+      port: 3211
+
+
+
+
+
+
+
+
+
+
+
+
+

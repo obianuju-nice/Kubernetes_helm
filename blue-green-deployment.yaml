@@ -1,0 +1,137 @@
+
+# green Deployment
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: nickos-blue-deployment
+
+  labels:
+
+    app: nickos-app
+
+    version: blue
+
+spec:
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: nickos-app
+
+      version: blue
+
+  strategy:
+
+    type: blue
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: nickos-app
+
+        version: blue
+
+    spec:
+
+      containers:
+
+      - name: nickos-app
+
+        image: nickos.website:v1
+
+
+
+---
+
+# Green Deployment
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: nickos-green-deployment
+
+  labels:
+
+    app: nickos-app
+
+    version: green 
+
+spec:
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: nickos-app
+
+      version: green 
+
+  strategy:
+
+    type: green
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: nickos-app
+
+        version: green
+
+    spec:
+
+      containers:
+
+      - name: nickos-app
+
+        image: nickos.website:v2
+
+
+
+---
+
+# This Service points to green deployment if you want to switch the traffic to green deployment
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: nickos-service
+
+spec:
+
+  selector:
+
+    app: nickos-app
+
+    version: green
+
+
+
+      
+
+
+
+
+
+
+

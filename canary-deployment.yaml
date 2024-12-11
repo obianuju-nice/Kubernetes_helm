@@ -1,0 +1,105 @@
+
+# Canary Deployment with the Stable version of higher Deployments for the current version
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: nickos-app
+
+  namespace: team1
+
+spec:
+
+  replicas: 5
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app:  nickos-app
+
+        version: canary #  or stable
+
+    spec:
+
+      containers:
+
+      - name: nickos-app
+
+        image: nickos-website:v1
+
+
+
+---
+
+#Canary Deployment for the new version with fewer replicas
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: stable-deployment
+
+  namespace: team1
+
+spec:
+
+  replicas: 1
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: nickos-app
+
+        version: canary
+
+    spec:
+
+      containers:
+
+      - name: nickos-app
+
+        image: nickos-website:v2
+
+
+
+---
+
+ # Service pointing to both version of deployments
+
+apiVersion: v1
+
+kind: Service
+
+metadata:
+
+  name: nickos-service
+
+spec:
+
+  selector:
+
+    app: nickos-app
+
+  ports:
+
+      port: 80
+
+  sessionAffinity: None
+
+
+
+
+
+
+
